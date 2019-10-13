@@ -6,29 +6,29 @@ const prod = mode === 'production';
 
 const purgecss = require('@fullhuman/postcss-purgecss')({
 
-  // Specify the paths to all of the template files in your project 
-  content: [
-    './src/**/*.html',
-    './src/**/*.svelte',
-    // './src/**/*.jsx',
-    // etc.
-  ],
+	// Specify the paths to all of the template files in your project 
+	content: [
+		'./src/**/*.html',
+		'./src/**/*.svelte',
+		// './src/**/*.jsx',
+		// etc.
+	],
 
-  // Include any special characters you're using in this regular expression
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+	// Include any special characters you're using in this regular expression
+	defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
 });
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 
 
 function recursiveIssuer(m) {
-  if (m.issuer) {
-    return recursiveIssuer(m.issuer);
-  } else if (m.name) {
-    return m.name;
-  } else {
-    return false;
-  }
+	if (m.issuer) {
+		return recursiveIssuer(m.issuer);
+	} else if (m.name) {
+		return m.name;
+	} else {
+		return false;
+	}
 }
 
 module.exports = {
@@ -90,14 +90,14 @@ module.exports = {
 					 * */
 					// prod ? MiniCssExtractPlugin.loader : 'style-loader',
 					{
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              // only enable hot in development
-              hmr: process.env.NODE_ENV === 'development',
-              // if hmr does not work, this is a forceful method.
-              reloadAll: true,
-            },
-          },
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							// only enable hot in development
+							hmr: process.env.NODE_ENV === 'development',
+							// if hmr does not work, this is a forceful method.
+							reloadAll: true,
+						},
+					},
 					'css-loader',
 					{
 						loader: 'postcss-loader',
@@ -110,14 +110,14 @@ module.exports = {
 						}
 					},
 					{
-            loader: 'sass-loader',
-            options: {
-              // Prefer `dart-sass`
+						loader: 'sass-loader',
+						options: {
+							// Prefer `dart-sass`
 							implementation: require('sass'),
 							sassOptions: {
 								includePaths: [path.resolve(__dirname, "src/styles/common.scss")]
 							},
-            },
+						},
 					},
 				]
 			},
@@ -125,23 +125,23 @@ module.exports = {
 	},
 	mode,
 	optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commonStyles: {
-          name: 'common',
-          test: (m, c, entry = 'common') =>
-            m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
-          chunks: 'all',
-          enforce: true,
-        },
-      },
+		splitChunks: {
+			cacheGroups: {
+				commonStyles: {
+					name: 'common',
+					test: (m, c, entry = 'common') =>
+						m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
+					chunks: 'all',
+					enforce: true,
+				},
+			},
 		},
 		minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
-  },
+	},
 	plugins: [
 		new MiniCssExtractPlugin({
 			filename: '[name].css',
 		})
 	],
-	devtool: prod ? false: 'source-map'
+	devtool: prod ? false : 'source-map'
 };
